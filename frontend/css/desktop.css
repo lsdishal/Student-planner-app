@@ -1,0 +1,162 @@
+:root {
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --primary-color: #6f42c1;
+    --text-color: #333;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    color: white;
+    /* Academic / Classic College Structure Theme */
+    background: url('https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?q=80&w=2670&auto=format&fit=crop') no-repeat center center fixed;
+    background-size: cover;
+    /* Fallback gradient if image fails to load or for smooth loading */
+    background-color: #1a1a2e;
+}
+
+/* Optional Overlay for readability */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: -1;
+}
+
+#desktop {
+    width: 100%;
+    height: calc(100% - 48px);
+    /* Minus taskbar */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.app-grid {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    height: 100%;
+    gap: 15px;
+    padding-top: 20px;
+}
+
+.app-icon {
+    width: 80px;
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+    padding: 5px;
+    will-change: transform, background, box-shadow;
+}
+
+.app-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.app-icon:active {
+    transform: scale(0.95);
+    transition: transform 0.1s;
+}
+
+.app-icon .icon {
+    font-size: 42px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.app-icon .label {
+    font-size: 13px;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    font-weight: 500;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+/* Widgets */
+#desktop-clock-widget {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 12px;
+    color: white;
+    text-align: right;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#widget-time {
+    font-size: 3rem;
+    font-weight: 300;
+}
+
+#widget-date {
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+#event-queue-widget {
+    position: absolute;
+    bottom: 80px;
+    right: 40px;
+    width: 250px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #4af626;
+    font-family: 'Courier New', monospace;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #4af626;
+    max-height: 200px;
+    overflow: hidden;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column-reverse;
+    /* Newest events at bottom like a stack/queue visualization */
+}
+
+#event-queue-widget .header {
+    border-bottom: 1px solid #4af626;
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    background: rgba(0, 50, 0, 0.5);
+}
+
+.event-item {
+    padding: 4px;
+    border-bottom: 1px dashed rgba(74, 246, 38, 0.3);
+    font-size: 12px;
+}
+
+.event-item.processing {
+    background: #4af626;
+    color: black;
+    font-weight: bold;
+}

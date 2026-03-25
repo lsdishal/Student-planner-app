@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebOS Portal Login</title>
+    <!-- Modern Geometric Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Abstract Background Elements (Glassmorphism Core) */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.4), rgba(0, 242, 254, 0.1));
+            filter: blur(80px);
+            /* Heavy blur for a premium ambient glow */
+            z-index: 1;
+            animation: float 8s ease-in-out infinite alternate;
+        }
+
+        .circle-1 {
+            width: 450px;
+            height: 450px;
+            top: -150px;
+            left: -150px;
+        }
+
+        .circle-2 {
+            width: 550px;
+            height: 550px;
+            bottom: -200px;
+            right: -150px;
+            background: linear-gradient(135deg, rgba(255, 113, 113, 0.25), rgba(255, 113, 113, 0.05));
+            animation-delay: -4s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                transform: translateY(30px) scale(1.05);
+            }
+        }
+
+        /* Glass Container */
+        .login-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 420px;
+            padding: 45px 40px;
+            background: rgba(255, 255, 255, 0.03);
+            /* Extremely subtle white tint */
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            /* Frosted border */
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            /* Catch light from above */
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 35px;
+            color: #fff;
+        }
+
+        .logo h1 {
+            font-size: 2.2em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            background: linear-gradient(to right, #ffffff, #a5d6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo p {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            font-weight: 400;
+            transition: all 0.3s;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 18px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            outline: none;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+            font-weight: 300;
+        }
+
+        .input-group input:focus {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(88, 166, 255, 0.6);
+            box-shadow: 0 0 20px rgba(88, 166, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .input-group input:focus+label,
+        .input-group.focused label {
+            color: #58a6ff;
+            transform: translateX(3px);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(37, 99, 235, 0.5);
+            background: linear-gradient(135deg, #4f92f7, #2d6ff2);
+        }
+
+        .btn-login:active {
+            transform: translateY(1px);
+        }
+
+        /* Success Animation Classes */
+        .btn-login.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            /* Emerald Green */
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+            pointer-events: none;
+        }
+
+        .btn-login.success::after {
+            content: '✓ Access Granted';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: inherit;
+            border-radius: inherit;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                scale: 0.95;
+            }
+
+            to {
+                opacity: 1;
+                scale: 1;
+            }
+        }
+
+        /* Error state */
+        .error-message {
+            color: #ff7b72;
+            font-size: 0.85em;
+            margin-top: 5px;
+            min-height: 20px;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.3s;
+        }
+
+        .error-message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .input-error {
+            border-color: #ff7b72 !important;
+            box-shadow: 0 0 15px rgba(255, 123, 114, 0.2) !important;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            50% {
+                transform: translateX(5px);
+            }
+
+            75% {
+                transform: translateX(-5px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Ambient glowing orbs -->
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+
+    <div class="login-container">
+        <div class="logo">
+            <h1>WebOS Portal</h1>
+            <p>Enter your student credentials to continue</p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="input-group">
+                <label for="regNumber">Registration Number</label>
+                <input type="text" id="regNumber" placeholder="e.g. 24BCE1587" autocomplete="off" required>
+            </div>
+
+            <div class="input-group">
+                <label for="email">Student Email</label>
+                <input type="email" id="email" placeholder="student@university.edu" autocomplete="off" required>
+            </div>
+
+            <div class="input-group" id="otpGroup" style="display: none;">
+                <label for="otp">One-Time Password (OTP)</label>
+                <input type="text" id="otp" placeholder="123456" autocomplete="off" maxlength="6">
+            </div>
+
+            <div id="errorText" class="error-message">Invalid credentials provided.</div>
+
+            <button type="submit" class="btn-login" id="loginBtn">Authenticate</button>
+        </form>
+    </div>
+
+    <script>
+        let isOtpStep = false;
+
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            const regNum = document.getElementById('regNumber');
+            const email = document.getElementById('email');
+            const otp = document.getElementById('otp');
+            const btn = document.getElementById('loginBtn');
+            const errorText = document.getElementById('errorText');
+            const otpGroup = document.getElementById('otpGroup');
+
+            // Reset states
+            regNum.classList.remove('input-error');
+            email.classList.remove('input-error');
+            if (otp) otp.classList.remove('input-error');
+            errorText.classList.remove('visible');
+
+            // Simple validation simulation
+            if (regNum.value.trim().length < 5) {
+                // Force reflow for shake animation
+                regNum.offsetWidth;
+                regNum.classList.add('input-error');
+                errorText.style.color = "#ff7b72";
+                errorText.innerText = "Please enter a valid Registration Number";
+                errorText.classList.add('visible');
+                return;
+            }
+
+            if (!email.value.includes('@')) {
+                email.offsetWidth;
+                email.classList.add('input-error');
+                errorText.style.color = "#ff7b72";
+                errorText.innerText = "Please enter a valid institution email";
+                errorText.classList.add('visible');
+                return;
+            }
+
+            if (!isOtpStep) {
+                // STEP 1: Request OTP
+                btn.innerHTML = "<span style='opacity:0.8'>Sending OTP...</span>";
+                btn.style.pointerEvents = "none";
+
+                try {
+                    const res = await fetch('http://localhost:5000/api/auth/send-otp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            registration_number: regNum.value.trim(),
+                            email: email.value.trim()
+                        })
+                    });
+
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        isOtpStep = true;
+                        regNum.disabled = true;
+                        email.disabled = true;
+                        otpGroup.style.display = 'block';
+                        btn.innerHTML = "Verify OTP & Login";
+                        btn.style.pointerEvents = "auto";
+                        // add visual hint
+                        errorText.innerText = "OTP sent to your email! (Check dev console)";
+                        errorText.style.color = "#a5d6ff";
+                        errorText.classList.add('visible');
+                    } else {
+                        throw new Error(data.error || "Failed to send OTP");
+                    }
+                } catch (err) {
+                    btn.innerHTML = "Authenticate";
+                    btn.style.pointerEvents = "auto";
+                    errorText.style.color = "#ff7b72";
+                    errorText.innerText = err.message || "Failed to connect to backend.";
+                    errorText.classList.add('visible');
+                }
+
+            } else {
+                // STEP 2: Verify OTP
+                if (otp.value.trim().length !== 6) {
+                    otp.offsetWidth;
+                    otp.classList.add('input-error');
+                    errorText.style.color = "#ff7b72";
+                    errorText.innerText = "Please enter the 6-digit OTP";
+                    errorText.classList.add('visible');
+                    return;
+                }
+
+                btn.innerHTML = "<span style='opacity:0.8'>Verifying Identity...</span>";
+                btn.style.pointerEvents = "none";
+
+                try {
+                    const res = await fetch('http://localhost:5000/api/auth/verify-otp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            registration_number: regNum.value.trim(),
+                            email: email.value.trim(),
+                            otp: otp.value.trim()
+                        })
+                    });
+
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        // Store user session info
+                        localStorage.setItem('regNumber', regNum.value.trim());
+
+                        btn.classList.add('success');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    } else {
+                        throw new Error(data.error || "Invalid OTP");
+                    }
+                } catch (err) {
+                    btn.innerHTML = "Verify OTP & Login";
+                    btn.style.pointerEvents = "auto";
+                    errorText.style.color = "#ff7b72";
+                    errorText.innerText = err.message || "Failed to connect to backend.";
+                    errorText.classList.add('visible');
+                    otp.classList.add('input-error');
+                }
+            }
+        }
+
+        // Add subtle interactive effects on inputs
+        document.querySelectorAll('input').forEach(input => {
+            const group = input.parentElement;
+            input.addEventListener('focus', () => {
+                group.classList.add('focused');
+            });
+            input.addEventListener('blur', () => {
+                if (!input.value) {
+                    group.classList.remove('focused');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

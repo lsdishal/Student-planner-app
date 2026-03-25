@@ -1,0 +1,196 @@
+.window {
+    position: absolute;
+    width: 600px;
+    height: 400px;
+    background: rgba(30, 30, 40, 0.85);
+    /* Dark Glass */
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    overflow: hidden;
+    /* resize: both; -- Removed in favor of custom JS resizer */
+    min-width: 300px;
+    min-height: 200px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Subtle border */
+    color: #eee;
+    /* Dark theme text */
+    animation: openWindow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-family: 'Inter', sans-serif;
+    will-change: transform, opacity, filter;
+}
+
+@keyframes openWindow {
+    from {
+        opacity: 0;
+        transform: scale(0.7) translateY(40px);
+        filter: blur(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+}
+
+.window.minimizing {
+    animation: minimizeWindow 0.4s cubic-bezier(0.5, 0, 0, 1) forwards;
+}
+
+@keyframes minimizeWindow {
+    to {
+        opacity: 0;
+        transform: scale(0.2) translateY(400px);
+        filter: blur(20px);
+    }
+}
+
+.window.restoring {
+    animation: restoreWindow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes restoreWindow {
+    from {
+        opacity: 0;
+        transform: scale(0.4) translateY(200px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.window.closing {
+    animation: closeWindow 0.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+@keyframes closeWindow {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.9) translateY(10px);
+    }
+}
+
+.title-bar {
+    height: 36px;
+    background: rgba(40, 40, 50, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    cursor: default;
+    user-select: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.title-bar span {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ddd;
+    flex: 1;
+    text-align: center;
+    pointer-events: none;
+    /* Let drag pass through */
+}
+
+/* Windows style controls */
+.controls {
+    display: flex;
+    gap: 0;
+    /* Windows buttons touch each other usually, or small gap */
+    height: 100%;
+}
+
+.controls button {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 36px;
+    height: 30px;
+    border-radius: 4px;
+    /* Slight round or 0 for Win10 */
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    /* Visible icons */
+    transition: background 0.2s;
+    box-shadow: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    /* Lighter icon color */
+    background: transparent;
+    font-family: system-ui, sans-serif;
+}
+
+.controls button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.controls button:active {
+    transform: scale(0.85);
+}
+
+.controls button[data-action="close"]:hover {
+    background: #e81123;
+    color: white;
+}
+
+.controls button[data-action="maximize"]:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Remove colored dots styling */
+.controls button[data-action="close"],
+.controls button[data-action="maximize"],
+.controls button[data-action="minimize"] {
+    background: transparent;
+}
+
+.window-content {
+    flex: 1;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.5);
+    position: relative;
+    padding: 0;
+}
+
+/* Resizer handle visual */
+/* Custom Resizer */
+.resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    cursor: nwse-resize;
+    z-index: 10;
+    /* Create a visual corner indicator */
+    background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.4) 50%);
+    border-bottom-right-radius: 12px;
+}
+
+.resize-handle:hover {
+    background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.8) 50%);
+}
+
+.window.maximized {
+    width: 100% !important;
+    height: calc(100% - 48px) !important;
+    /* Subtract taskbar height */
+    top: 0 !important;
+    left: 0 !important;
+    border-radius: 0 !important;
+    transform: none !important;
+}

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebOS v1.0</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/desktop.css">
+    <link rel="stylesheet" href="css/window.css">
+    <link rel="stylesheet" href="css/taskbar.css">
+    <link rel="stylesheet" href="css/apps.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="desktop">
+        <!-- Floating Clock Widget -->
+        <div id="desktop-clock-widget">
+            <div id="widget-time">--:--</div>
+            <div id="widget-date">-- -- --</div>
+        </div>
+
+        <!-- Event Queue Visualization -->
+        <div id="event-queue-widget">
+            <div class="header">Event Queue</div>
+            <div id="event-list">
+                <!-- Events appear here -->
+            </div>
+            <div id="event-processing-indicator" class="hidden">Processing...</div>
+        </div>
+
+        <div class="app-grid">
+            <div class="app-icon" data-app="editor">
+                <div class="icon">📝</div>
+                <div class="label">Code Editor</div>
+            </div>
+            <div class="app-icon" data-app="planner">
+                <div class="icon">📆</div>
+                <div class="label">Planner</div>
+            </div>
+            <div class="app-icon" data-app="timer">
+                <div class="icon">⏲️</div>
+                <div class="label">Pomodoro</div>
+            </div>
+            <div class="app-icon" data-app="terminal">
+                <div class="icon">💻</div>
+                <div class="label">Terminal</div>
+            </div>
+            <div class="app-icon" data-app="browser">
+                <div class="icon">🌐</div>
+                <div class="label">Browser</div>
+            </div>
+            <div class="app-icon" data-app="calculator">
+                <div class="icon">🧮</div>
+                <div class="label">Calculator</div>
+            </div>
+            <div class="app-icon" data-app="attendance">
+                <div class="icon">📊</div>
+                <div class="label">Attendance</div>
+            </div>
+            <div class="app-icon" data-app="study">
+                <div class="icon">📚</div>
+                <div class="label">Study Hub</div>
+            </div>
+            <div class="app-icon" data-app="schedule">
+                <div class="icon">📅</div>
+                <div class="label">Timetable</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="taskbar">
+        <div id="start-button">❖</div>
+        <div id="taskbar-items">
+            <!-- Pinned Apps -->
+            <button class="taskbar-item pinned" data-app="browser" title="Browser">🌐</button>
+            <button class="taskbar-item pinned" data-app="terminal" title="Terminal">💻</button>
+            <button class="taskbar-item pinned" data-app="editor" title="Code Editor">📝</button>
+            <div class="separator"></div>
+            <!-- Running Apps will be appended here -->
+        </div>
+        <div id="clock">12:00 PM</div>
+    </div>
+
+    <div id="start-menu" class="hidden">
+        <div class="start-menu-header">
+            <span>Pinned</span>
+            <button>All apps ></button>
+        </div>
+        <div class="start-menu-grid">
+            <div class="start-item" data-app="editor">
+                <div class="icon">📝</div>
+                <span>Code Editor</span>
+            </div>
+            <div class="start-item" data-app="planner">
+                <div class="icon">📅</div>
+                <span>Planner</span>
+            </div>
+            <div class="start-item" data-app="timer">
+                <div class="icon">⏲️</div>
+                <span>Pomodoro</span>
+            </div>
+            <div class="start-item" data-app="terminal">
+                <div class="icon">💻</div>
+                <span>Terminal</span>
+            </div>
+            <div class="start-item" data-app="browser">
+                <div class="icon">🌐</div>
+                <span>Browser</span>
+            </div>
+            <div class="start-item" data-app="attendance">
+                <div class="icon">📊</div>
+                <span>Attendance</span>
+            </div>
+            <div class="start-item" data-app="study">
+                <div class="icon">📚</div>
+                <span>Study Hub</span>
+            </div>
+            <div class="start-item" data-app="schedule">
+                <div class="icon">📅</div>
+                <span>Timetable</span>
+            </div>
+        </div>
+        <div class="start-menu-footer">
+            <div class="user-profile">
+                <div class="avatar">🎓</div>
+                <span>Student</span>
+            </div>
+            <div class="power-btn">⏻</div>
+        </div>
+    </div>
+
+    <!-- Kernel -->
+    <script src="js/kernel/eventBus.js"></script>
+    <script src="js/kernel/state.js"></script>
+    <script src="js/kernel/scheduler.js"></script>
+    <script src="js/kernel/eventQueue.js"></script>
+
+    <!-- FS -->
+    <script src="js/fs/vfs.js"></script>
+
+    <!-- Services -->
+    <script src="js/services/taskbar.js"></script>
+    <script src="js/services/clock.js"></script>
+
+    <!-- WM -->
+    <script src="js/wm/windowActions.js"></script>
+    <script src="js/wm/compositor.js"></script>
+    <script src="js/wm/windowManager.js"></script>
+
+    <!-- Apps -->
+    <script src="js/apps/baseApp.js"></script>
+    <script src="js/apps/notes.js"></script>
+    <script src="js/apps/calculator.js"></script>
+    <script src="js/apps/terminal.js"></script>
+    <script src="js/apps/attendance.js"></script>
+    <script src="js/apps/study.js"></script>
+    <script src="js/apps/browser.js"></script>
+    <script src="js/apps/schedule.js"></script>
+    <script src="js/apps/email.js"></script>
+    <script src="js/apps/editor.js"></script>
+    <script src="js/apps/planner.js"></script>
+    <script src="js/apps/timer.js"></script>
+
+    <!-- UI Controllers -->
+    <script src="js/desktop.js"></script>
+
+    <!-- Boot -->
+    <script src="js/kernel/boot.js"></script>
+</body>
+
+</html>

@@ -13,12 +13,12 @@ from routes.storage import storage_bp
 
 def create_app():
     # Set frontend folder as static folder
-    frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
+    frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'frontend'))
     app = Flask(__name__, static_folder=frontend_dir, static_url_path='')
     CORS(app)  # Enable CORS for frontend requests
     
     # Configure SQLite database
-    basedir = os.path.abspath(os.path.dirname(__name__))
+    basedir = os.path.abspath(os.path.dirname(__file__))
     db_path = os.path.join(basedir, 'webos.db')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

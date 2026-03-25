@@ -3,8 +3,9 @@ from email.message import EmailMessage
 import os
 
 def send_otp_email(to_email, otp_code):
-    sender_email = 'dishvit55@gmail.com'
-    sender_password = 'amaz ogby jqct lmyl'
+    
+    sender_email = os.environ.get("EMAIL_USER")
+    sender_password = os.environ.get("EMAIL_PASS")
 
     if not sender_email or not sender_password:
         print(f"[WARNING] SENDER_EMAIL or SENDER_PASSWORD not set in environment variables.")

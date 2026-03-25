@@ -317,97 +317,100 @@
     </div>
 
     <script>
-    let isOtpStep = false;
+let isOtpStep = false;
 
-    async function handleLogin(e) {
-        e.preventDefault();
+// 🔥 YOUR RENDER BACKEND URL
+const API_BASE = "https://web-os-backend.onrender.com";
 
-        const regNum = document.getElementById('regNumber');
-        const email = document.getElementById('email');
-        const otp = document.getElementById('otp');
-        const btn = document.getElementById('loginBtn');
-        const errorText = document.getElementById('errorText');
-        const otpGroup = document.getElementById('otpGroup');
+async function handleLogin(e) {
+    e.preventDefault();
 
-        errorText.classList.remove('visible');
+    const regNum = document.getElementById('regNumber');
+    const email = document.getElementById('email');
+    const otp = document.getElementById('otp');
+    const btn = document.getElementById('loginBtn');
+    const errorText = document.getElementById('errorText');
+    const otpGroup = document.getElementById('otpGroup');
 
-        if (!isOtpStep) {
-            // STEP 1: SEND OTP
-            btn.innerHTML = "Sending OTP...";
-            btn.disabled = true;
+    errorText.classList.remove('visible');
 
-            try {
-                const res = await fetch('/api/auth/send-otp', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        registration_number: regNum.value.trim(),
-                        email: email.value.trim()
-                    })
-                });
+    if (!isOtpStep) {
+        // STEP 1: SEND OTP
+        btn.innerHTML = "Sending OTP...";
+        btn.disabled = true;
 
-                const data = await res.json();
+        try {
+            const res = await fetch(`${API_BASE}/api/auth/send-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    registration_number: regNum.value.trim(),
+                    email: email.value.trim()
+                })
+            });
 
-                if (res.ok) {
-                    isOtpStep = true;
-                    otpGroup.style.display = 'block';
-                    regNum.disabled = true;
-                    email.disabled = true;
+            const data = await res.json();
 
-                    btn.innerHTML = "Verify OTP";
-                    btn.disabled = false;
+            if (res.ok) {
+                isOtpStep = true;
+                otpGroup.style.display = 'block';
+                regNum.disabled = true;
+                email.disabled = true;
 
-                    errorText.innerText = "OTP sent! Check your email.";
-                    errorText.style.color = "#a5d6ff";
-                    errorText.classList.add('visible');
-                } else {
-                    throw new Error(data.error || "Failed to send OTP");
-                }
-            } catch (err) {
-                btn.innerHTML = "Authenticate";
-                btn.disabled = false;
-                errorText.innerText = err.message;
-                errorText.classList.add('visible');
-            }
-
-        } else {
-            // STEP 2: VERIFY OTP
-            btn.innerHTML = "Verifying...";
-            btn.disabled = true;
-
-            try {
-                const res = await fetch('/api/auth/verify-otp', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        registration_number: regNum.value.trim(),
-                        email: email.value.trim(),
-                        otp: otp.value.trim()
-                    })
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    localStorage.setItem("regNumber", regNum.value.trim());
-
-                    btn.innerHTML = "Success!";
-                    btn.style.background = "#10b981";
-
-                    setTimeout(() => {
-                        window.location.href = "index.html";
-                    }, 1000);
-                } else {
-                    throw new Error(data.error || "Invalid OTP");
-                }
-            } catch (err) {
                 btn.innerHTML = "Verify OTP";
                 btn.disabled = false;
-                errorText.innerText = err.message;
+
+                errorText.innerText = "OTP sent! Check your email.";
+                errorText.style.color = "#a5d6ff";
                 errorText.classList.add('visible');
+            } else {
+                throw new Error(data.error || "Failed to send OTP");
             }
+        } catch (err) {
+            btn.innerHTML = "Authenticate";
+            btn.disabled = false;
+            errorText.innerText = err.message;
+            errorText.classList.add('visible');
+        }
+
+    } else {
+        // STEP 2: VERIFY OTP
+        btn.innerHTML = "Verifying...";
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`${API_BASE}/api/auth/verify-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    registration_number: regNum.value.trim(),
+                    email: email.value.trim(),
+                    otp: otp.value.trim()
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                localStorage.setItem("regNumber", regNum.value.trim());
+
+                btn.innerHTML = "Success!";
+                btn.style.background = "#10b981";
+
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1000);
+            } else {
+                throw new Error(data.error || "Invalid OTP");
+            }
+        } catch (err) {
+            btn.innerHTML = "Verify OTP";
+            btn.disabled = false;
+            errorText.innerText = err.message;
+            errorText.classList.add('visible');
         }
     }
+}
 </script>
 </body>
 

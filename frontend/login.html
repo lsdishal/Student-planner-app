@@ -319,8 +319,8 @@
     <script>
 let isOtpStep = false;
 
-// 🔥 YOUR RENDER BACKEND URL
-const API_BASE = "https://web-os-backend.onrender.com";
+// 🔥 AUTOMATICALLY DETECT API URL (Saves you from manual updates!)
+const API_BASE = window.location.origin;
 
 async function handleLogin(e) {
     e.preventDefault();
@@ -367,6 +367,7 @@ async function handleLogin(e) {
                 throw new Error(data.error || "Failed to send OTP");
             }
         } catch (err) {
+            console.error("Login Step 1 Error:", err);
             btn.innerHTML = "Authenticate";
             btn.disabled = false;
             errorText.innerText = err.message;
@@ -404,6 +405,7 @@ async function handleLogin(e) {
                 throw new Error(data.error || "Invalid OTP");
             }
         } catch (err) {
+            console.error("Login Step 2 Error:", err);
             btn.innerHTML = "Verify OTP";
             btn.disabled = false;
             errorText.innerText = err.message;

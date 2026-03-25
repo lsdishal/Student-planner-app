@@ -2,8 +2,8 @@ services:
   - type: web
     name: web-os-backend
     runtime: python
-    buildCommand: pip install -r backend/python/requirements.txt
-    startCommand: gunicorn --chdir backend/python "app:create_app()"
+    buildCommand: "pip install -r backend/python/requirements.txt"
+    startCommand: "gunicorn --chdir backend/python app:app"
     envVars:
       - key: PORT
         value: 5000
@@ -11,3 +11,4 @@ services:
         generateValue: true
       - key: PYTHON_VERSION
         value: 3.10.0
+    healthCheckPath: /login

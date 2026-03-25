@@ -17,7 +17,7 @@ def create_app():
         os.path.join(os.path.dirname(__file__), '..', '..', 'frontend')
     )
     app = Flask(__name__, static_folder=frontend_dir, static_url_path='')
-    CORS(app)  # Enable CORS for frontend requests
+    CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)  # Enable CORS for frontend requests
     
     # Configure SQLite database
     basedir = os.path.abspath(os.path.dirname(__file__))

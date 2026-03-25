@@ -17,6 +17,12 @@
 </head>
 
 <body>
+    <script>
+        const user = localStorage.getItem("regNumber");
+        if (!user) {
+            window.location.href = "login.html";
+        }
+    </script>
     <div id="desktop">
         <!-- Floating Clock Widget -->
         <div id="desktop-clock-widget">

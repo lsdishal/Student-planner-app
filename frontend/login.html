@@ -317,145 +317,98 @@
     </div>
 
     <script>
-        let isOtpStep = false;
+    let isOtpStep = false;
 
-        async function handleLogin(e) {
-            e.preventDefault();
+    async function handleLogin(e) {
+        e.preventDefault();
 
-            const regNum = document.getElementById('regNumber');
-            const email = document.getElementById('email');
-            const otp = document.getElementById('otp');
-            const btn = document.getElementById('loginBtn');
-            const errorText = document.getElementById('errorText');
-            const otpGroup = document.getElementById('otpGroup');
+        const regNum = document.getElementById('regNumber');
+        const email = document.getElementById('email');
+        const otp = document.getElementById('otp');
+        const btn = document.getElementById('loginBtn');
+        const errorText = document.getElementById('errorText');
+        const otpGroup = document.getElementById('otpGroup');
 
-            // Reset states
-            regNum.classList.remove('input-error');
-            email.classList.remove('input-error');
-            if (otp) otp.classList.remove('input-error');
-            errorText.classList.remove('visible');
+        errorText.classList.remove('visible');
 
-            // Simple validation simulation
-            if (regNum.value.trim().length < 5) {
-                // Force reflow for shake animation
-                regNum.offsetWidth;
-                regNum.classList.add('input-error');
-                errorText.style.color = "#ff7b72";
-                errorText.innerText = "Please enter a valid Registration Number";
+        if (!isOtpStep) {
+            // STEP 1: SEND OTP
+            btn.innerHTML = "Sending OTP...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        registration_number: regNum.value.trim(),
+                        email: email.value.trim()
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    isOtpStep = true;
+                    otpGroup.style.display = 'block';
+                    regNum.disabled = true;
+                    email.disabled = true;
+
+                    btn.innerHTML = "Verify OTP";
+                    btn.disabled = false;
+
+                    errorText.innerText = "OTP sent! Check your email.";
+                    errorText.style.color = "#a5d6ff";
+                    errorText.classList.add('visible');
+                } else {
+                    throw new Error(data.error || "Failed to send OTP");
+                }
+            } catch (err) {
+                btn.innerHTML = "Authenticate";
+                btn.disabled = false;
+                errorText.innerText = err.message;
                 errorText.classList.add('visible');
-                return;
             }
 
-            if (!email.value.includes('@')) {
-                email.offsetWidth;
-                email.classList.add('input-error');
-                errorText.style.color = "#ff7b72";
-                errorText.innerText = "Please enter a valid institution email";
+        } else {
+            // STEP 2: VERIFY OTP
+            btn.innerHTML = "Verifying...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        registration_number: regNum.value.trim(),
+                        email: email.value.trim(),
+                        otp: otp.value.trim()
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem("regNumber", regNum.value.trim());
+
+                    btn.innerHTML = "Success!";
+                    btn.style.background = "#10b981";
+
+                    setTimeout(() => {
+                        window.location.href = "index.html";
+                    }, 1000);
+                } else {
+                    throw new Error(data.error || "Invalid OTP");
+                }
+            } catch (err) {
+                btn.innerHTML = "Verify OTP";
+                btn.disabled = false;
+                errorText.innerText = err.message;
                 errorText.classList.add('visible');
-                return;
-            }
-
-            if (!isOtpStep) {
-                // STEP 1: Request OTP
-                btn.innerHTML = "<span style='opacity:0.8'>Sending OTP...</span>";
-                btn.style.pointerEvents = "none";
-
-                try {
-                    const res = await fetch('http://localhost:5000/api/auth/send-otp', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            registration_number: regNum.value.trim(),
-                            email: email.value.trim()
-                        })
-                    });
-
-                    const data = await res.json();
-
-                    if (res.ok) {
-                        isOtpStep = true;
-                        regNum.disabled = true;
-                        email.disabled = true;
-                        otpGroup.style.display = 'block';
-                        btn.innerHTML = "Verify OTP & Login";
-                        btn.style.pointerEvents = "auto";
-                        // add visual hint
-                        errorText.innerText = "OTP sent to your email! (Check dev console)";
-                        errorText.style.color = "#a5d6ff";
-                        errorText.classList.add('visible');
-                    } else {
-                        throw new Error(data.error || "Failed to send OTP");
-                    }
-                } catch (err) {
-                    btn.innerHTML = "Authenticate";
-                    btn.style.pointerEvents = "auto";
-                    errorText.style.color = "#ff7b72";
-                    errorText.innerText = err.message || "Failed to connect to backend.";
-                    errorText.classList.add('visible');
-                }
-
-            } else {
-                // STEP 2: Verify OTP
-                if (otp.value.trim().length !== 6) {
-                    otp.offsetWidth;
-                    otp.classList.add('input-error');
-                    errorText.style.color = "#ff7b72";
-                    errorText.innerText = "Please enter the 6-digit OTP";
-                    errorText.classList.add('visible');
-                    return;
-                }
-
-                btn.innerHTML = "<span style='opacity:0.8'>Verifying Identity...</span>";
-                btn.style.pointerEvents = "none";
-
-                try {
-                    const res = await fetch('http://localhost:5000/api/auth/verify-otp', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            registration_number: regNum.value.trim(),
-                            email: email.value.trim(),
-                            otp: otp.value.trim()
-                        })
-                    });
-
-                    const data = await res.json();
-
-                    if (res.ok) {
-                        // Store user session info
-                        localStorage.setItem('regNumber', regNum.value.trim());
-
-                        btn.classList.add('success');
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 1500);
-                    } else {
-                        throw new Error(data.error || "Invalid OTP");
-                    }
-                } catch (err) {
-                    btn.innerHTML = "Verify OTP & Login";
-                    btn.style.pointerEvents = "auto";
-                    errorText.style.color = "#ff7b72";
-                    errorText.innerText = err.message || "Failed to connect to backend.";
-                    errorText.classList.add('visible');
-                    otp.classList.add('input-error');
-                }
             }
         }
-
-        // Add subtle interactive effects on inputs
-        document.querySelectorAll('input').forEach(input => {
-            const group = input.parentElement;
-            input.addEventListener('focus', () => {
-                group.classList.add('focused');
-            });
-            input.addEventListener('blur', () => {
-                if (!input.value) {
-                    group.classList.remove('focused');
-                }
-            });
-        });
-    </script>
+    }
+</script>
 </body>
 
 </html>

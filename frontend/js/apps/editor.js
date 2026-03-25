@@ -81,7 +81,7 @@ class EditorApp extends BaseApp {
         fileInput.type = "file";
         fileInput.style.display = "none";
 
-const apiBase = "https://web-os-backend.onrender.com/api/editor";
+const apiBase = "/api/editor";
         const regNumber = localStorage.getItem('regNumber') || "STUDENT";
 
         saveBtn.onclick = async () => {

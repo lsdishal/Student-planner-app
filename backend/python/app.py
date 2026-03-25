@@ -13,7 +13,9 @@ from routes.storage import storage_bp
 
 def create_app():
     # Set frontend folder as static folder
-    frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'frontend'))
+    frontend_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), '..', '..', 'frontend')
+    )
     app = Flask(__name__, static_folder=frontend_dir, static_url_path='')
     CORS(app)  # Enable CORS for frontend requests
     
@@ -23,7 +25,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
-    # Add a secret key for session/JWT later
+    # Secret key
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'super-secret-webos-key')
 
     # Storage Configuration
@@ -31,7 +33,7 @@ def create_app():
     if not os.path.exists(upload_path):
         os.makedirs(upload_path)
     app.config['UPLOAD_FOLDER'] = upload_path
-    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16MB limit
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB limit
 
     db.init_app(app)
 
@@ -58,6 +60,10 @@ def create_app():
 
     return app
 
+
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=True, port=5000)
+
+    # Render-compatible configuration
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)

@@ -1,7 +1,7 @@
 class PlannerApp extends BaseApp {
     constructor() {
         super("Student Planner");
-        this.apiBase = "http://localhost:5000/api/planner";
+this.apiBase = "https://web-os-backend.onrender.com/api/planner";
         this.tasks = [];
         this.filter = "all";
         this.searchQuery = "";

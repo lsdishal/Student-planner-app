@@ -2,7 +2,7 @@ class StudyApp extends BaseApp {
     constructor() {
         super("Study Hub");
         this.currentTab = "Semester 1";
-        this.apiBase = "http://localhost:5000/api";
+this.apiBase = "https://web-os-backend.onrender.com/api";
     }
 
     render(container) {

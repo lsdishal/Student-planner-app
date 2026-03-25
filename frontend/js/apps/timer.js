@@ -163,7 +163,7 @@ class TimerApp extends BaseApp {
     async logSession() {
         const regNumber = localStorage.getItem('regNumber') || "STUDENT";
         try {
-            await fetch("http://localhost:5000/api/pomodoro/save", {
+            await fetch("https://web-os-backend.onrender.com/api/pomodoro/save", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -179,7 +179,7 @@ class TimerApp extends BaseApp {
     async loadHistory() {
         const regNumber = localStorage.getItem('regNumber') || "STUDENT";
         try {
-            const res = await fetch(`http://localhost:5000/api/pomodoro/history/${regNumber}`);
+const res = await fetch(`https://web-os-backend.onrender.com/api/pomodoro/history/${regNumber}`);
             const data = await res.json();
             this.historyList.innerHTML = data.slice(0, 5).map(s => `
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">

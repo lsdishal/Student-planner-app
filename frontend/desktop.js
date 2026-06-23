@@ -3,22 +3,30 @@ const DesktopManager = (() => {
        DESKTOP ICON FREE DRAG
     ══════════════════════════════════════════ */
 
-    const ICON_POS_KEY = "webos_icon_positions";
     const ICON_W = 80, ICON_H = 90, ICON_GAP = 15, ICON_PAD = 20;
 
+    function getIconPosKey() {
+        const reg = localStorage.getItem('regNumber') || 'default';
+        return `webos_icon_positions_${reg}`;
+    }
+
     function loadPositions() {
-        try { return JSON.parse(localStorage.getItem(ICON_POS_KEY) || "{}"); }
+        const key = getIconPosKey();
+        try { return JSON.parse(localStorage.getItem(key) || "{}"); }
         catch { return {}; }
     }
 
     function savePositions(pos) {
-        localStorage.setItem(ICON_POS_KEY, JSON.stringify(pos));
+        const key = getIconPosKey();
+        localStorage.setItem(key, JSON.stringify(pos));
     }
 
-    /* Default grid layout — column-first, similar to old flexbox look */
+    /* Default grid layout — column-first, dynamically wrapping columns depending on desktop height */
     function defaultPosition(index) {
-        const col = Math.floor(index / 8);
-        const row = index % 8;
+        const dh = document.getElementById("desktop")?.offsetHeight || window.innerHeight - 52;
+        const maxRows = Math.max(1, Math.floor((dh - ICON_PAD * 2) / (ICON_H + ICON_GAP)));
+        const col = Math.floor(index / maxRows);
+        const row = index % maxRows;
         return {
             x: ICON_PAD + col * (ICON_W + ICON_GAP),
             y: ICON_PAD + row * (ICON_H + ICON_GAP)
@@ -210,7 +218,8 @@ const DesktopManager = (() => {
     return {
         refreshIcons: initDesktopIcons,
         resetIconPositions() {
-            localStorage.removeItem(ICON_POS_KEY);
+            const key = getIconPosKey();
+            localStorage.removeItem(key);
             initDesktopIcons();
         }
     };

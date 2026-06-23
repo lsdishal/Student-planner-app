@@ -16,14 +16,39 @@ const TaskbarService = (() => {
         study:      { icon: "📚", label: "Study Hub" },
         schedule:   { icon: "📅", label: "Timetable" },
         marks:      { icon: "🎯", label: "Marks" },
+        fees:       { icon: "💳", label: "Fees Tracker" },
+        grades:     { icon: "🏅", label: "Grades" },
+        curriculum: { icon: "📚", label: "Curriculum" },
+        od:         { icon: "🎟️", label: "OD Tracker" },
+        profile:    { icon: "🧑‍🎓", label: "My Profile" },
+        timetable:  { icon: "🗓️", label: "Timetable" },
+        campus:     { icon: "🏠", label: "Campus Life" },
+        messenger:  { icon: "💬", label: "Messenger" },
     };
 
     /* App name → icon map (used by running-app taskbar items) */
     const appIcons = {
-        "Browser":      "🌐", "Attendance": "📊", "Study Hub": "📚",
-        "Timetable":    "📅", "Student Mail": "📧", "Notes": "📝",
-        "Calculator":   "🧮", "Terminal": "💻", "Planner": "📋",
-        "Pomodoro":     "⏲️", "Code Editor": "📝", "Marks": "🎯",
+        "Browser":          "🌐",
+        "Attendance":       "📊",
+        "Study Hub":        "📚",
+        "Timetable":        "🗓️",
+        "Student Mail":     "📧",
+        "Notes":            "📝",
+        "Calculator":       "🧮",
+        "Terminal":         "💻",
+        "Planner":          "📋",
+        "Student Planner":  "📋",
+        "Pomodoro":         "⏲️",
+        "Pomodoro Timer":   "⏲️",
+        "Code Editor":      "📝",
+        "Marks":            "🎯",
+        "Fees Tracker":     "💳",
+        "Grades":           "🏅",
+        "Curriculum":       "📚",
+        "OD Tracker":       "🎟️",
+        "My Profile":       "🧑‍🎓",
+        "Campus Life":      "🏠",
+        "Messenger":        "💬",
     };
 
     const STORAGE_KEY = "webos_pinned_apps";

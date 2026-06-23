@@ -294,6 +294,27 @@ const TaskbarService = (() => {
                 showAppCtx(e, key);
             });
         });
+
+        // ── Power button → logout ──
+        document.querySelector(".power-btn")?.addEventListener("click", () => {
+            // Close start menu first
+            startMenu?.classList.add("hidden");
+            startBtn?.classList.remove("active");
+
+            // Fade-out overlay
+            const overlay = document.createElement("div");
+            overlay.style.cssText =
+                "position:fixed;inset:0;background:#000;opacity:0;" +
+                "z-index:999999;transition:opacity 0.5s;pointer-events:all;";
+            document.body.appendChild(overlay);
+
+            requestAnimationFrame(() => { overlay.style.opacity = "1"; });
+
+            setTimeout(() => {
+                localStorage.removeItem("regNumber");
+                window.location.href = "login.html";
+            }, 520);
+        });
     });
 
     return { pinApp, unpinApp, renderPinned };

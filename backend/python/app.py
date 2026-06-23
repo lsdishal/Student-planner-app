@@ -31,7 +31,12 @@ def create_app():
 
     # ✅ Database config (SQLite)
     basedir = os.path.abspath(os.path.dirname(__file__))
-    db_path = os.path.join(basedir, 'webos.db')
+    
+    # Render is read-only for app files. Store DB in /tmp when running on Render/production.
+    if os.environ.get('RENDER'):
+        db_path = '/tmp/webos.db'
+    else:
+        db_path = os.path.join(basedir, 'webos.db')
 
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -161,7 +161,8 @@ class TimerApp extends BaseApp {
     }
 
     async logSession() {
-        const regNumber = localStorage.getItem('regNumber') || "STUDENT";
+        const regNumber = this.getRegNumber();
+        if (!regNumber) return;
         try {
             await fetch("/api/pomodoro/save", {
                 method: 'POST',
@@ -177,10 +178,12 @@ class TimerApp extends BaseApp {
     }
 
     async loadHistory() {
-        const regNumber = localStorage.getItem('regNumber') || "STUDENT";
+        const regNumber = this.getRegNumber();
+        if (!regNumber) return;
         try {
 const res = await fetch(`/api/pomodoro/history/${regNumber}`);
             const data = await res.json();
+            if (!res.ok || !Array.isArray(data)) return;
             this.historyList.innerHTML = data.slice(0, 5).map(s => `
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                     <span style="color: ${s.type === 'focus' ? '#af40ff' : '#00e0b0'}">${s.type}</span>

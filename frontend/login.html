@@ -319,8 +319,19 @@
     <script>
 let isOtpStep = false;
 
-// 🔥 AUTOMATICALLY DETECT API URL (Saves you from manual updates!)
-const API_BASE = window.location.origin;
+function getApiBase() {
+    const { protocol, hostname, port, origin } = window.location;
+    // Production / Flask-served pages: API lives on the same origin
+    if (protocol !== 'file:' && (!port || port === '5000' || port === '80' || port === '443')) {
+        return origin;
+    }
+    // Local dev: login opened via Live Server, IDE preview, or file://
+    const host = hostname || 'localhost';
+    const scheme = protocol === 'https:' ? 'https' : 'http';
+    return `${scheme}://${host}:5000`;
+}
+
+const API_BASE = getApiBase();
 
 async function handleLogin(e) {
     e.preventDefault();
@@ -349,7 +360,15 @@ async function handleLogin(e) {
                 })
             });
 
-            const data = await res.json();
+            let data;
+            try {
+                data = await res.json();
+            } catch {
+                throw new Error(
+                    `Server returned an invalid response (${res.status}). ` +
+                    `Make sure the Python backend is running on ${API_BASE}.`
+                );
+            }
 
             if (res.ok) {
                 isOtpStep = true;
@@ -360,8 +379,18 @@ async function handleLogin(e) {
                 btn.innerHTML = "Verify OTP";
                 btn.disabled = false;
 
-                errorText.innerText = "OTP sent! Check your email.";
-                errorText.style.color = "#a5d6ff";
+                // Dev mode: OTP returned directly in response (no email configured)
+                if (data.dev_otp) {
+                    document.getElementById('otp').value = data.dev_otp;
+                    const devLabel = data.email_failed
+                        ? `Email delivery failed — OTP: ${data.dev_otp} (auto-filled)`
+                        : `Dev Mode — OTP: ${data.dev_otp} (auto-filled)`;
+                    errorText.innerText = devLabel;
+                    errorText.style.color = "#ffd700";
+                } else {
+                    errorText.innerText = "OTP sent! Check your email.";
+                    errorText.style.color = "#a5d6ff";
+                }
                 errorText.classList.add('visible');
             } else {
                 throw new Error(data.error || "Failed to send OTP");
@@ -370,7 +399,10 @@ async function handleLogin(e) {
             console.error("Login Step 1 Error:", err);
             btn.innerHTML = "Authenticate";
             btn.disabled = false;
-            errorText.innerText = err.message;
+            const msg = err.message === 'Failed to fetch'
+                ? `Cannot reach backend at ${API_BASE}. Start it with: cd backend/python && python3 app.py`
+                : err.message;
+            errorText.innerText = msg;
             errorText.classList.add('visible');
         }
 

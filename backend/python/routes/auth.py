@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models import db, User, OTP, verify_and_clear_otp
 from email_service import send_otp_email
+import os
 import random
 from datetime import datetime, timedelta
 
@@ -8,32 +9,54 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/send-otp', methods=['POST'])
 def handle_send_otp():
-    data = request.json
-    reg_number = data.get('registration_number')
-    email = data.get('email')
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "Invalid JSON body"}), 400
 
-    if not reg_number or not email:
-        return jsonify({"error": "Registration number and email are required"}), 400
+        reg_number = data.get('registration_number')
+        email = data.get('email')
 
-    if "@" not in email:
-        return jsonify({"error": "Invalid email format"}), 400
+        if not reg_number or not email:
+            return jsonify({"error": "Registration number and email are required"}), 400
 
-    # Generate 6-digit OTP
-    otp_code = str(random.randint(100000, 999999))
-    expires = datetime.utcnow() + timedelta(minutes=5)
-    
-    # Save to db
-    new_otp = OTP(email=email, code=otp_code, expires_at=expires)
-    db.session.add(new_otp)
-    db.session.commit()
+        if "@" not in email:
+            return jsonify({"error": "Invalid email format"}), 400
 
-    # Send email
-    success = send_otp_email(email, otp_code)
-    
-    if success:
-        return jsonify({"message": "OTP sent successfully"}), 200
-    else:
+        # Generate 6-digit OTP
+        otp_code = str(random.randint(100000, 999999))
+        expires = datetime.utcnow() + timedelta(minutes=5)
+
+        # Save to db
+        new_otp = OTP(email=email, code=otp_code, expires_at=expires)
+        db.session.add(new_otp)
+        db.session.commit()
+
+        # Send email
+        success = send_otp_email(email, otp_code)
+        is_local = os.environ.get("RENDER") is None
+
+        if success:
+            # In dev mode (no email configured), return OTP in response for easy testing
+            if not os.environ.get("EMAIL_USER"):
+                return jsonify({"message": "OTP sent successfully", "dev_otp": otp_code, "dev_mode": True}), 200
+            return jsonify({"message": "OTP sent successfully"}), 200
+
+        # OTP is saved; on local dev, expose it so login still works if SMTP fails
+        if is_local:
+            return jsonify({
+                "message": "Email could not be sent; use the OTP shown below",
+                "dev_otp": otp_code,
+                "dev_mode": True,
+                "email_failed": True,
+            }), 200
+
         return jsonify({"error": "Failed to send email via SMTP. Check server logs."}), 500
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 @auth_bp.route('/verify-otp', methods=['POST'])
 def handle_verify_otp():

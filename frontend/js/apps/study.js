@@ -72,10 +72,16 @@ this.apiBase = "/api";
     }
 
     async loadMaterials(grid) {
-        const regNumber = localStorage.getItem('regNumber') || "STUDENT";
+        const regNumber = this.getRegNumber();
+        if (!regNumber) {
+            grid.innerHTML = `<div style="color: #ff7675;">Please log in to view materials.</div>`;
+            return;
+        }
         try {
             const res = await fetch(`${this.apiBase}/materials/list/${regNumber}/${this.currentTab}`);
             const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to load materials");
+            if (!Array.isArray(data)) throw new Error("Invalid server response");
 
             if (data.length === 0) {
                 grid.innerHTML = `<div style="color: #555; font-size: 13px; text-align: center; padding: 20px; width: 100%;">No materials listed for this semester. Click "+ Add Material" to start.</div>`;
@@ -121,7 +127,8 @@ this.apiBase = "/api";
     }
 
     async downloadFile(material) {
-        const regNumber = localStorage.getItem('regNumber') || "STUDENT";
+        const regNumber = this.getRegNumber();
+        if (!regNumber) return;
         const filename = material.file_path.split(/[\\/]/).pop();
         const url = `${this.apiBase}/storage/download/${regNumber}/${filename}`;
         window.open(url, '_blank');
@@ -163,7 +170,7 @@ this.apiBase = "/api";
 
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('registration_number', localStorage.getItem('regNumber') || "STUDENT");
+            formData.append('registration_number', this.getRegNumber() || '');
             formData.append('semester', this.currentTab);
             formData.append('title', title);
 
@@ -200,7 +207,8 @@ this.apiBase = "/api";
     }
 
     async saveMaterial(payload) {
-        const regNumber = localStorage.getItem('regNumber') || "STUDENT";
+        const regNumber = this.getRegNumber();
+        if (!regNumber) return;
         try {
             await fetch(`${this.apiBase}/materials/save`, {
                 method: 'POST',
@@ -220,10 +228,16 @@ this.apiBase = "/api";
     }
 
     async loadNotes(container) {
-        const regNumber = localStorage.getItem('regNumber') || "STUDENT";
+        const regNumber = this.getRegNumber();
+        if (!regNumber) {
+            container.innerHTML = `<div style="color: #444; text-align: center; padding: 10px;">Please log in to view notes.</div>`;
+            return;
+        }
         try {
             const res = await fetch(`${this.apiBase}/notes/list/${regNumber}/${this.currentTab}`);
             const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to load notes");
+            if (!Array.isArray(data)) throw new Error("Invalid server response");
             container.innerHTML = data.length ? data.map(n => `
                 <div class="history-item" data-id="${n.id}">
                     <div style="flex: 1;">
@@ -245,7 +259,8 @@ this.apiBase = "/api";
     }
 
     async saveNote(content) {
-        const regNumber = localStorage.getItem('regNumber') || "STUDENT";
+        const regNumber = this.getRegNumber();
+        if (!regNumber) return;
         try {
             await fetch(`${this.apiBase}/notes/save`, {
                 method: 'POST',

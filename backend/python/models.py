@@ -14,6 +14,7 @@ class User(db.Model):
     files = db.relationship('EditorFile', backref='owner', lazy=True)
     sessions = db.relationship('PomodoroSession', backref='owner', lazy=True)
     tasks = db.relationship('PlannerTask', backref='owner', lazy=True)
+    attendance_subjects = db.relationship('AttendanceSubject', backref='owner', lazy=True)
 
 class StudyNote(db.Model):
     __tablename__ = 'study_notes'
@@ -61,6 +62,15 @@ class PlannerTask(db.Model):
     category = db.Column(db.String(50), nullable=True) # #DSA, #Exam etc
     due_date = db.Column(db.DateTime, nullable=True)
     completed = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class AttendanceSubject(db.Model):
+    __tablename__ = 'attendance_subjects'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    total = db.Column(db.Integer, default=0)
+    attended = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class OTP(db.Model):

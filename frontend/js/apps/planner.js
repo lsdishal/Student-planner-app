@@ -15,6 +15,7 @@ this.apiBase = "/api/planner";
                 display: flex;
                 flex-direction: column;
                 height: 100%;
+                min-height: 0;
                 background: linear-gradient(135deg, #1e1e2f 0%, #2a2a40 100%);
                 color: white;
                 padding: 20px;
@@ -97,6 +98,7 @@ this.apiBase = "/api/planner";
                 margin: 0;
                 overflow-y: auto;
                 flex: 1;
+                min-height: 0;
             }
             .task-card {
                 background: #2d2d3a;
@@ -231,12 +233,19 @@ this.apiBase = "/api/planner";
     }
 
     async loadTasks() {
-        const regNumber = localStorage.getItem('regNumber') || "STUDENT";
+        const regNumber = this.getRegNumber();
+        if (!regNumber) return;
         try {
             const res = await fetch(`${this.apiBase}/list/${regNumber}`);
-            this.tasks = await res.json();
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to load tasks');
+            this.tasks = Array.isArray(data) ? data : [];
             this.renderTaskList();
-        } catch (err) { console.error("Load failed", err); }
+        } catch (err) {
+            console.error("Load failed", err);
+            this.tasks = [];
+            this.renderTaskList();
+        }
     }
 
     async handleAddTask() {
@@ -259,8 +268,11 @@ this.apiBase = "/api/planner";
             dueDate = new Date(dateIn.value).toISOString();
         }
 
+        const regNumber = this.getRegNumber();
+        if (!regNumber) return;
+
         const payload = {
-            registration_number: localStorage.getItem('regNumber') || "STUDENT",
+            registration_number: regNumber,
             text: textIn.value,
             priority: priIn.value,
             category: tagIn.value,
@@ -361,7 +373,7 @@ this.apiBase = "/api/planner";
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    registration_number: localStorage.getItem('regNumber') || "STUDENT",
+                    registration_number: this.getRegNumber(),
                     id: task.id,
                     text: newText,
                     priority: task.priority,

@@ -32,7 +32,7 @@ const WindowManager = (() => {
 
         // Added proper HTML structure for titlebar and content
         win.innerHTML = `
-      <div class="titlebar">
+      <div class="title-bar">
         <span>${app.name}</span>
         <div class="controls">
           <button data-action="minimize">—</button>
@@ -40,14 +40,14 @@ const WindowManager = (() => {
           <button data-action="close">✖</button>
         </div>
       </div>
-      <div class="content"></div>
+      <div class="window-content"></div>
       <div class="resize-handle"></div>
     `;
 
         document.body.appendChild(win);
         windows.set(pid, win);
 
-        app.render(win.querySelector(".content"));
+        app.render(win.querySelector(".window-content"));
         attachEvents(win);
 
         EventBus.emit("PROCESS_STARTED", { pid, name: app.name });
@@ -127,7 +127,7 @@ const WindowManager = (() => {
     }
 
     function makeDraggable(win) {
-        const bar = win.querySelector(".titlebar");
+        const bar = win.querySelector(".title-bar");
         let dx = 0, dy = 0, dragging = false;
 
         bar.onmousedown = e => {

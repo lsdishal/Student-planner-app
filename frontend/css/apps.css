@@ -34,10 +34,12 @@ button:active {
 .attendance-container {
     padding: 24px;
     height: 100%;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     background: #1e1e2e;
     color: #eee;
+    box-sizing: border-box;
 }
 
 .attendance-header {
@@ -84,6 +86,7 @@ button:active {
 
 .subject-list {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -178,6 +181,7 @@ button:active {
 .study-container {
     display: flex;
     height: 100%;
+    min-height: 0;
     background: #1e1e2e;
     color: #eee;
 }
@@ -215,6 +219,7 @@ button:active {
 
 .main-content {
     flex: 1;
+    min-height: 0;
     padding: 40px;
     overflow-y: auto;
 }
@@ -325,6 +330,7 @@ button:active {
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-height: 0;
     background: #202124;
     color: #e8eaed;
 }
@@ -452,6 +458,7 @@ button:active {
 
 .browser-viewport {
     flex: 1;
+    min-height: 0;
     background: #202124;
     overflow: auto;
     position: relative;
@@ -524,8 +531,11 @@ button:active {
 /* Timetable */
 .schedule-container {
     background: #202124;
-    /* Dark bg */
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
     padding: 30px;
+    box-sizing: border-box;
 }
 
 .schedule-header h2 {
@@ -611,6 +621,7 @@ button:active {
 .terminal-container {
     background: #282a36;
     height: 100%;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     padding: 15px;

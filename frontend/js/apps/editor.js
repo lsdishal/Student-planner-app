@@ -82,9 +82,10 @@ class EditorApp extends BaseApp {
         fileInput.style.display = "none";
 
 const apiBase = "/api/editor";
-        const regNumber = localStorage.getItem('regNumber') || "STUDENT";
 
         saveBtn.onclick = async () => {
+            const regNumber = this.getRegNumber();
+            if (!regNumber) return;
             const filename = fileNameInput.value.trim();
             if (!filename) { alert("Enter a filename"); return; }
 
@@ -110,6 +111,8 @@ const apiBase = "/api/editor";
         };
 
         openBtn.onclick = async () => {
+            const regNumber = this.getRegNumber();
+            if (!regNumber) return;
             const filename = prompt("Enter filename to load:");
             if (!filename) return;
             try {

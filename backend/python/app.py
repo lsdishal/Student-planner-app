@@ -1,4 +1,9 @@
 import os
+from dotenv import load_dotenv
+
+# Load .env file from the same directory as this script
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 from models import db

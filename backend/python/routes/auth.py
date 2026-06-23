@@ -42,16 +42,8 @@ def handle_send_otp():
                 return jsonify({"message": "OTP sent successfully", "dev_otp": otp_code, "dev_mode": True}), 200
             return jsonify({"message": "OTP sent successfully"}), 200
 
-        # OTP is saved; on local dev, expose it so login still works if SMTP fails
-        if is_local:
-            return jsonify({
-                "message": "Email could not be sent; use the OTP shown below",
-                "dev_otp": otp_code,
-                "dev_mode": True,
-                "email_failed": True,
-            }), 200
-
-        return jsonify({"error": "Failed to send email via SMTP. Check server logs."}), 500
+        # If email sending failed, return error
+        return jsonify({"error": "Failed to send OTP email. Please try again."}), 500
 
     except Exception as e:
         import traceback

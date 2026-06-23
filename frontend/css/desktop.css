@@ -40,49 +40,55 @@ body::before {
     /* Minus taskbar */
     padding: 20px;
     box-sizing: border-box;
+    position: relative;   /* anchor for absolute icons */
 }
 
 .app-grid {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    height: 100%;
-    gap: 15px;
-    padding-top: 20px;
+    position: absolute;
+    inset: 0;
+    /* icons are absolutely positioned inside this */
 }
 
 .app-icon {
+    position: absolute;   /* free positioning */
     width: 80px;
     height: 90px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    cursor: grab;
     border-radius: 12px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
     padding: 5px;
-    will-change: transform, background, box-shadow;
+    box-sizing: border-box;
+    user-select: none;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    will-change: transform;
+    touch-action: none;
 }
 
 .app-icon:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.18);
     backdrop-filter: blur(8px);
-    transform: scale(1.1) translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
-.app-icon:active {
-    transform: scale(0.95);
-    transition: transform 0.1s;
+.app-icon.dragging {
+    cursor: grabbing;
+    opacity: 0.55;
+    transform: scale(1.12);
+    background: rgba(255,255,255,0.15);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    z-index: 9000 !important;
+    transition: none;
 }
 
 .app-icon .icon {
     font-size: 42px;
     margin-bottom: 8px;
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    pointer-events: none;
 }
 
 .app-icon .label {
@@ -90,11 +96,11 @@ body::before {
     color: white;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     font-weight: 500;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
+    pointer-events: none;
 }
 
 /* Widgets */

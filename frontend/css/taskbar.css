@@ -242,3 +242,104 @@
 .power-btn:hover {
     background: rgba(255, 60, 60, 0.4);
 }
+
+/* ─── Pinned icon wrapper ─── */
+.tb-pin-icon { font-size: 22px; pointer-events: none; }
+
+/* ─── Right-click Context Menu ─── */
+.tb-ctx-menu {
+    position: fixed;
+    z-index: 99999;
+    background: rgba(28, 28, 40, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 6px;
+    min-width: 210px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.05);
+    animation: ctxIn 0.15s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes ctxIn {
+    from { opacity:0; transform: scale(0.94) translateY(6px); }
+    to   { opacity:1; transform: scale(1) translateY(0); }
+}
+
+.tb-ctx-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #e0e0e0;
+    cursor: pointer;
+    transition: background 0.12s;
+    user-select: none;
+    font-family: 'Inter', sans-serif;
+}
+.tb-ctx-item:hover { background: rgba(255,255,255,0.1); }
+.tb-ctx-item.danger { color: #ff7675; }
+.tb-ctx-item.danger:hover { background: rgba(255,118,117,0.15); }
+
+.tb-ctx-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+
+.tb-ctx-sep {
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    margin: 5px 8px;
+}
+
+/* ─── Toast notification ─── */
+.tb-toast {
+    position: fixed;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%) translateY(12px);
+    background: rgba(28, 28, 40, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #e0e0e0;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 24px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 99998;
+    opacity: 0;
+    transition: opacity 0.25s, transform 0.25s;
+    white-space: nowrap;
+    pointer-events: none;
+}
+.tb-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ─── Taskbar drag-to-reorder ─── */
+.taskbar-item.tb-dragging {
+    opacity: 0.35;
+    transform: scale(0.88) !important;
+    transition: none !important;
+}
+.taskbar-item.tb-drag-over-left::before {
+    content: "";
+    position: absolute;
+    left: -5px; top: 4px; bottom: 4px;
+    width: 3px;
+    background: #00d8ff;
+    border-radius: 2px;
+    box-shadow: 0 0 8px #00d8ff;
+}
+.taskbar-item.tb-drag-over-right::after {
+    content: "";
+    position: absolute;
+    right: -5px; top: 4px; bottom: 4px;
+    width: 3px;
+    background: #00d8ff;
+    border-radius: 2px;
+    box-shadow: 0 0 8px #00d8ff;
+}
+

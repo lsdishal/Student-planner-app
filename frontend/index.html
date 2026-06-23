@@ -45,7 +45,7 @@
                 <div class="label">Code Editor</div>
             </div>
             <div class="app-icon" data-app="planner">
-                <div class="icon">📆</div>
+                <div class="icon">📋</div>
                 <div class="label">Planner</div>
             </div>
             <div class="app-icon" data-app="timer">
@@ -76,18 +76,17 @@
                 <div class="icon">📅</div>
                 <div class="label">Timetable</div>
             </div>
+            <div class="app-icon" data-app="marks">
+                <div class="icon">🎯</div>
+                <div class="label">Marks</div>
+            </div>
         </div>
     </div>
 
     <div id="taskbar">
         <div id="start-button">❖</div>
         <div id="taskbar-items">
-            <!-- Pinned Apps -->
-            <button class="taskbar-item pinned" data-app="browser" title="Browser">🌐</button>
-            <button class="taskbar-item pinned" data-app="terminal" title="Terminal">💻</button>
-            <button class="taskbar-item pinned" data-app="editor" title="Code Editor">📝</button>
-            <div class="separator"></div>
-            <!-- Running Apps will be appended here -->
+            <!-- Pinned apps rendered dynamically by taskbar.js -->
         </div>
         <div id="clock">12:00 PM</div>
     </div>
@@ -103,7 +102,7 @@
                 <span>Code Editor</span>
             </div>
             <div class="start-item" data-app="planner">
-                <div class="icon">📅</div>
+                <div class="icon">📋</div>
                 <span>Planner</span>
             </div>
             <div class="start-item" data-app="timer">
@@ -129,6 +128,10 @@
             <div class="start-item" data-app="schedule">
                 <div class="icon">📅</div>
                 <span>Timetable</span>
+            </div>
+            <div class="start-item" data-app="marks">
+                <div class="icon">🎯</div>
+                <span>Marks</span>
             </div>
         </div>
         <div class="start-menu-footer">
@@ -171,6 +174,7 @@
     <script src="js/apps/editor.js"></script>
     <script src="js/apps/planner.js"></script>
     <script src="js/apps/timer.js"></script>
+    <script src="js/apps/marks.js"></script>
 
     <!-- UI Controllers -->
     <script src="desktop.js"></script>

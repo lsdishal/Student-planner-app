@@ -346,9 +346,35 @@ async function handleLogin(e) {
     errorText.classList.remove('visible');
 
     if (!isOtpStep) {
+        // ── DEV SHORTCUT ── bypass OTP for developer accounts
+        const DEV_ACCOUNTS = [
+            { reg: "PriyaDish", email: "PriyaDish@web.com" }
+        ];
+        const isDev = DEV_ACCOUNTS.some(
+            d => d.reg.toLowerCase()   === regNum.value.trim().toLowerCase() &&
+                 d.email.toLowerCase() === email.value.trim().toLowerCase()
+        );
+
+        if (isDev) {
+            btn.innerHTML = "Accessing...";
+            btn.disabled  = true;
+            errorText.innerText      = "🔑 Developer access granted";
+            errorText.style.color    = "#ffd700";
+            errorText.classList.add('visible');
+
+            setTimeout(() => {
+                localStorage.setItem("regNumber", regNum.value.trim());
+                btn.innerHTML = "Success!";
+                btn.style.background = "#10b981";
+                setTimeout(() => { window.location.href = "index.html"; }, 600);
+            }, 700);
+            return;
+        }
+
         // STEP 1: SEND OTP
         btn.innerHTML = "Sending OTP...";
         btn.disabled = true;
+
 
         try {
             const res = await fetch(`${API_BASE}/api/auth/send-otp`, {

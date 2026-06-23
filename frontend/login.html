@@ -328,7 +328,7 @@ function getApiBase() {
     // Local dev: login opened via Live Server, IDE preview, or file://
     const host = hostname || 'localhost';
     const scheme = protocol === 'https:' ? 'https' : 'http';
-    return `${scheme}://${host}:5000`;
+    return `${scheme}://${host}:5001`;
 }
 
 const API_BASE = getApiBase();

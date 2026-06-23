@@ -1,40 +1,35 @@
+import smtplib
+from email.message import EmailMessage
 import os
-import resend
 
 def send_otp_email(to_email, otp_code):
-    api_key = os.environ.get("RESEND_API_KEY")
+    sender_email = os.environ.get("EMAIL_USER")
+    sender_password = os.environ.get("EMAIL_PASS")
 
-    if not api_key:
-        # Dev mode: no API key set, just print to console
+    # If variables are not set, print to console (development fallback)
+    if not sender_email or not sender_password:
         print(f"---------- [DEV MODE LOG] ----------")
         print(f" Simulating sending OTP to: {to_email}")
         print(f" Simulated OTP Code: {otp_code}")
         print(f"------------------------------------")
         return True
 
-    resend.api_key = api_key
+    msg = EmailMessage()
+    msg.set_content(f"Your WebOS Authentication OTP is: {otp_code}\n\nThis code will expire in 5 minutes.")
+
+    msg['Subject'] = 'WebOS Login verification code'
+    msg['From'] = f"WebOS System <{sender_email}>"
+    msg['To'] = to_email
 
     try:
-        params: resend.Emails.SendParams = {
-            "from": "WebOS System <onboarding@resend.dev>",
-            "to": [to_email],
-            "subject": "WebOS Login Verification Code",
-            "html": f"""
-                <div style="font-family: Arial, sans-serif; max-width: 400px; margin: auto; padding: 30px; background: #1a1a2e; color: #ffffff; border-radius: 12px;">
-                    <h2 style="color: #6c63ff; text-align: center;">WebOS Portal</h2>
-                    <p style="text-align: center; color: #ccc;">Your one-time login code is:</p>
-                    <div style="background: #16213e; border: 2px solid #6c63ff; border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0;">
-                        <span style="font-size: 36px; font-weight: bold; letter-spacing: 10px; color: #ffffff;">{otp_code}</span>
-                    </div>
-                    <p style="text-align: center; color: #aaa; font-size: 13px;">This code expires in <strong>5 minutes</strong>. Do not share it with anyone.</p>
-                </div>
-            """,
-        }
-
-        email = resend.Emails.send(params)
-        print(f"[Resend] Email sent to {to_email}, ID: {email['id']}")
+        print(f"Connecting to SMTP server via SSL port 465 for {to_email}...")
+        # Use SMTP_SSL on port 465, which is typically open on Render
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10)
+        server.login(sender_email, sender_password)
+        server.send_message(msg)
+        server.quit()
+        print(f"Successfully sent OTP to {to_email}")
         return True
-
     except Exception as e:
-        print(f"[Resend] Failed to send email to {to_email}: {str(e)}")
+        print(f"Failed to send email to {to_email}: {str(e)}")
         return False

@@ -3,7 +3,7 @@ class PlannerApp extends BaseApp {
         super("Student Planner");
 this.apiBase = "/api/planner";
         this.tasks = [];
-        this.filter = "all";
+        this.filter = "pending";
         this.searchQuery = "";
         this.main = null; // Store reference to container
     }
@@ -18,7 +18,7 @@ this.apiBase = "/api/planner";
                 min-height: 0;
                 background: linear-gradient(135deg, #1e1e2f 0%, #2a2a40 100%);
                 color: white;
-                padding: 20px;
+                padding: 12px;
                 box-sizing: border-box;
                 font-family: 'Segoe UI', system-ui, sans-serif;
             }
@@ -26,13 +26,13 @@ this.apiBase = "/api/planner";
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 20px;
+                margin-bottom: 12px;
             }
             .progress-hud {
                 background: rgba(255,255,255,0.05);
-                padding: 15px;
+                padding: 10px;
                 border-radius: 12px;
-                margin-bottom: 20px;
+                margin-bottom: 12px;
                 border: 1px solid rgba(255,255,255,0.1);
             }
             .progress-bar-container {
@@ -48,11 +48,12 @@ this.apiBase = "/api/planner";
                 width: 0%;
                 transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             }
-            .controls {
+            .planner-controls {
                 display: flex;
                 gap: 10px;
-                margin-bottom: 20px;
+                margin-bottom: 12px;
                 flex-wrap: wrap;
+                flex: 0 0 auto;
             }
             .search-box {
                 flex: 1;
@@ -68,9 +69,9 @@ this.apiBase = "/api/planner";
                 grid-template-columns: 1fr auto auto auto auto;
                 gap: 10px;
                 background: rgba(0,0,0,0.2);
-                padding: 15px;
+                padding: 10px;
                 border-radius: 10px;
-                margin-bottom: 20px;
+                margin-bottom: 12px;
                 align-items: center;
             }
             .add-task-form input, .add-task-form select {
@@ -98,12 +99,12 @@ this.apiBase = "/api/planner";
                 margin: 0;
                 overflow-y: auto;
                 flex: 1;
-                min-height: 0;
+                min-height: 80px;
             }
             .task-card {
                 background: #2d2d3a;
-                margin-bottom: 12px;
-                padding: 15px;
+                margin-bottom: 8px;
+                padding: 12px;
                 border-radius: 10px;
                 display: flex;
                 align-items: center;
@@ -191,7 +192,7 @@ this.apiBase = "/api/planner";
                 <button class="primary-btn" id="save-task-btn">Add Task</button>
             </div>
 
-            <div class="controls">
+            <div class="planner-controls">
                 <input type="text" class="search-box" id="task-search" placeholder="Search tasks...">
                 <select id="status-filter" style="padding:10px; border-radius:8px; background:#1e1e2f; color:white; border:1px solid #444">
                     <option value="all">All Status</option>
@@ -280,19 +281,25 @@ this.apiBase = "/api/planner";
         };
 
         try {
-            await fetch(`${this.apiBase}/save`, {
+            const response = await fetch(`${this.apiBase}/save`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || 'Failed to save task');
+
             textIn.value = "";
             tagIn.value = "";
             dateIn.value = "";
             quickDate.value = "";
             quickDate.style.display = 'block';
             dateIn.style.display = 'none';
-            this.loadTasks();
-        } catch (err) { alert("Save failed"); }
+            await this.loadTasks();
+        } catch (err) {
+            console.error("Save failed", err);
+            alert(err.message || "Save failed");
+        }
     }
 
     renderTaskList() {

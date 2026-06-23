@@ -37,8 +37,8 @@ def handle_send_otp():
         is_local = os.environ.get("RENDER") is None
 
         if success:
-            # In dev mode (no email configured), return OTP in response for easy testing
-            if not os.environ.get("EMAIL_USER"):
+            # In dev mode (no Brevo configured), return OTP in response for easy testing
+            if not os.environ.get("BREVO_API_KEY"):
                 return jsonify({"message": "OTP sent successfully", "dev_otp": otp_code, "dev_mode": True}), 200
             return jsonify({"message": "OTP sent successfully"}), 200
 

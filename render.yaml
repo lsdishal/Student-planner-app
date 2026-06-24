@@ -12,3 +12,8 @@ services:
       - key: PYTHON_VERSION
         value: 3.10.0
     healthCheckPath: /login
+    disk:
+      name: webos-data
+      mountPath: /data
+      sizeGB: 1
+

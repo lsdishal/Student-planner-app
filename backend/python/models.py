@@ -15,6 +15,7 @@ class User(db.Model):
     sessions = db.relationship('PomodoroSession', backref='owner', lazy=True)
     tasks = db.relationship('PlannerTask', backref='owner', lazy=True)
     attendance_subjects = db.relationship('AttendanceSubject', backref='owner', lazy=True)
+    states = db.relationship('UserState', backref='owner', lazy=True)
 
 class StudyNote(db.Model):
     __tablename__ = 'study_notes'
@@ -96,3 +97,14 @@ def verify_and_clear_otp(email, code):
         db.session.commit()
         return True
     return False
+
+class UserState(db.Model):
+    __tablename__ = 'user_states'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    key = db.Column(db.String(100), nullable=False)
+    value = db.Column(db.Text, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'key', name='_user_key_uc'),)
+

@@ -16,6 +16,7 @@ from routes.materials import materials_bp
 from routes.editor import editor_bp
 from routes.pomodoro import pomodoro_bp
 from routes.storage import storage_bp
+from routes.state import state_bp
 
 
 def create_app():
@@ -32,9 +33,12 @@ def create_app():
     # ✅ Database config (SQLite)
     basedir = os.path.abspath(os.path.dirname(__file__))
     
-    # Render is read-only for app files. Store DB in /tmp when running on Render/production.
+    # Render is read-only for app files. Store DB in /data (Render persistent disk) or fallback to /tmp.
     if os.environ.get('RENDER'):
-        db_path = '/tmp/webos.db'
+        if os.path.exists('/data'):
+            db_path = '/data/webos.db'
+        else:
+            db_path = '/tmp/webos.db'
     else:
         db_path = os.path.join(basedir, 'webos.db')
 
@@ -62,6 +66,7 @@ def create_app():
     app.register_blueprint(editor_bp, url_prefix='/api/editor')
     app.register_blueprint(pomodoro_bp, url_prefix='/api/pomodoro')
     app.register_blueprint(storage_bp, url_prefix='/api/storage')
+    app.register_blueprint(state_bp, url_prefix='/api/state')
 
     # ✅ Serve frontend pages properly
     @app.route('/')
